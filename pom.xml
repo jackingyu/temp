@@ -103,11 +103,11 @@
 			<version>${mysql-jdbc.version}</version>
 		</dependency>
 
-		<dependency>
+		<!—- <dependency>
 			<groupId>com.sap</groupId>
 			<artifactId>hana-connector-java</artifactId>
 			<version>1.0</version>
-		</dependency>
+		</dependency> —->
 
 
 		<!-- logback 
@@ -204,17 +204,18 @@
 		</dependency>
 
 		<!-- NetWeaver compilation -->
-		<dependency>
+		<!—- <dependency>
 			<groupId>com.sap</groupId>
 			<artifactId>tc-sec-ume-api-impl</artifactId>
 			<version>7.3010</version>
-		</dependency>
+		</dependency> 
 
 		<dependency>
 			<groupId>com.sap</groupId>
 			<artifactId>tc-je-security-impl</artifactId>
 			<version>7.3010</version>
 		</dependency>
+—->
 		<!-- NetWeaver compilation -->
 		<!-- <dependency> <groupId>io.springfox</groupId> <artifactId>springfox-swagger2</artifactId> 
 			<version>2.2.2</version> </dependency> <dependency> <groupId>com.fasterxml.jackson.core</groupId> 
@@ -367,11 +368,11 @@
 						<artifactId>mysql-connector-java</artifactId>
 						<version>${mysql-jdbc.version}</version>
 					</dependency>
-					<dependency>
+					<!—-<dependency>
 						<groupId>com.sap</groupId>
 						<artifactId>hana-connector-java</artifactId>
 						<version>1.0</version>
-					</dependency>
+					</dependency>—->
 					<dependency>
 						<groupId>com.xxg</groupId>
 						<artifactId>mybatis-generator-plugin</artifactId>
