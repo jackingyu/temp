@@ -1,0 +1,46 @@
+<header class="main-header">
+    <a href="javascript:void(0);" class="logo">
+      <!-- mini logo for sidebar mini 50x50 pixels -->
+      <!-- <span class="logo-mini"><b>ATL</b></span> -->
+      <span class="logo-mini">
+        <img src="images/ATL-LOGO.png">
+      </span>
+      <!-- logo for regular state and mobile devices -->
+      <span class="logo-lg">
+        <img src="images/ATL-LOGO.png">
+        <span>Andon2.0</span>
+      </span>  
+    </a> 
+    <nav class="navbar navbar-static-top" role="navigation">       
+        <div class="navbar-custom-menu">
+            <div style="font-size:0.8rem;color:#ededed;">
+              当前版本: <span ng-bind="bodyConfig.debugVersion"></span>
+            </div>
+            <div class="factory-select-box">
+                  <div class="factory-select">
+                      <ui-select ng-change="factorySelectChange($select);" ng-model="bodyConfig.currentFactory"> 
+                        <ui-select-match>
+                            <span ng-bind="bodyConfig.currentFactory.name"></span>
+                        </ui-select-match>
+                        <ui-select-choices repeat="item in (bodyConfig.factoryList | filter: $select.search) track by item.id">
+                            <!-- <span class="{{item.icon}}"></span> -->
+                            <span ng-bind-html="item.name | highlight: $select.search"></span>
+                        </ui-select-choices>
+                      </ui-select>
+                  </div>
+            </div>
+            <div class="ad-now-time">
+                  <span ng-bind="bodyConfig.currentTime | adHeaderBarTimeFilter"></span>
+            </div>
+            
+                              
+            
+            
+            <div class="ad-exit-app">
+                  <span class="ion-power"></span>
+            </div>
+        </div>
+        
+        
+    </nav>
+</header> 

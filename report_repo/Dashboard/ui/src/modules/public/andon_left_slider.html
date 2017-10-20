@@ -1,0 +1,42 @@
+<aside class="main-sidebar">
+	<div class="user-box">
+		<div class="ub-left">
+			<img src="images/person_icon.png">
+		</div>
+		<div class="ub-right">
+			<span ng-bind="bodyConfig.userName" class="user-name"></span>
+			<span ng-bind="bodyConfig.userTitle" class="user-title"></span>
+		</div> 
+	</div> 
+	<div class="search-box"> 
+		<!--  <div class="box-mini">
+			<i class="glyphicon glyphicon-search"></i>
+		</div>  -->
+		<div class="input-group">
+		  <span class="input-group-addon" id="basic-addon1">
+		  	<i class="glyphicon glyphicon-search"></i>
+		  </span>
+		  <input type="text" ng-model="bodyConfig.functionSearch" class="form-control" placeholder="输入进行搜索" ng-change="searchStrChanged();" aria-describedby="basic-addon1">
+		</div>
+	</div> 
+	<section class="sidebar">
+		<ul class="sidebar-menu">
+          <li ng-repeat="item in bodyConfig.functionsList" class="treeview" ng-class="{'active':(item.isGroup&&item.active)}">
+              <a href="javascript:void(0);" class="group-title">
+                  <i class="fa fa-folder"></i>
+                  <span ng-bind="item.title"></span>
+                  <i class="fa fa-angle-left pull-right"></i>
+              </a>
+              <ul class="treeview-menu">
+                  <li ng-repeat="child in item.childs">
+                      <a ui-sref="child.distState">
+                          <i class="fa fa-circle-o"></i>
+                          <span ng-bind="child.title"></span>
+                      </a>
+                  </li>
+              </ul>
+          </li>
+
+          </ul>
+	</section>
+</aside>

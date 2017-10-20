@@ -1,0 +1,53 @@
+<project name="ConMon" default="deployui" basedir=".">
+	<property environment="SystemVariable" />
+	<property name="platform.home" value="${SystemVariable.PLATFORM_HOME}"></property>
+	<property name="tomcat.home" value="${SystemVariable.TOMCAT_HOME}"></property>
+	<property name="ui_sourcepath" value="${basedir}/ConMon/src/main/webapp/_ui"
+		description="ui file source path" />
+	<property name="jsp_sourcepath"
+		value="${basedir}/ConMon/src/main/webapp/WEB-INF/views"
+		description="jsp source path" />
+	<property name="tag_sourcepath"
+		value="${basedir}/ConMon/src/main/webapp/WEB-INF/tags" description="tags source path" />
+	<property name="ui_targetpath" value="${basedir}/ConMon/target/ConMon/_ui"
+		description="ui file target path" />
+	<property name="jsp_targetpath"
+		value="${basedir}/ConMon/target/ConMon/WEB-INF/views"
+		description="jsp target path" />
+	<property name="tag_targetpath"
+		value="${basedir}/ConMon/target/ConMon/WEB-INF/tags"
+		description="tags target path" />
+
+
+	<target name="configureserver">
+		<echo message="${platform.home}"></echo>
+		<copy file="${basedir}/template/server_template.xml" tofile="${tomcat.home}/conf/server.xml" overwrite="true"/>
+		<replaceregexp byline="true">
+			<regexp pattern="\$\{docBasePath\}" />
+			<substitution expression="${platform.home}/target/ConMon" />
+			<fileset file="${tomcat.home}/conf/server.xml" />
+		</replaceregexp>
+	</target>
+
+	<target name="deployui">
+		<copy todir="${ui_targetpath}">
+			<fileset dir="${ui_sourcepath}">
+			</fileset>
+		</copy>
+		<copy todir="${jsp_targetpath}">
+			<fileset dir="${jsp_sourcepath}">
+			</fileset>
+		</copy>
+		<copy todir="${tag_targetpath}">
+			<fileset dir="${tag_sourcepath}">
+			</fileset>
+		</copy>
+		<copy todir="${message_targetpath}">
+			<fileset dir="${message_sourcepath}">
+			</fileset>
+		</copy>
+	</target>
+
+	
+
+</project>

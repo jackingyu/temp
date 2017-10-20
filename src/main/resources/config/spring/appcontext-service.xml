@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <alias name="defaultEventService" alias="eventService"></alias>
+	<bean id="defaultEventService" class="com.fmg.conmon.service.event.impl.DefaultEventService">
+	</bean>
+
+
+	<alias name="testDataGenerator" alias="dataGenerator"></alias>
+	<bean id="testDataGenerator" class="com.fmg.conmon.system.initial.TestDataGenerator">
+	   <property name="dataBuilders">
+	      <list>
+	        <ref bean="eventDataBuilder"></ref>
+	      </list>
+	   </property>
+	</bean>
+	
+	<alias name="defaultEventDataBuilder" alias="eventDataBuilder"></alias>
+	<bean id="defaultEventDataBuilder" class="com.fmg.conmon.system.initial.EventDataBuilder">
+	     <property name="fileName" value="event.xls"/>
+	</bean>
+</beans>

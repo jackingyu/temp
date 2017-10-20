@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- All rights reserved. This software is the confidential and proprietary 
+	information of hybris ("Confidential Information"). You shall not disclose 
+	such Confidential Information and shall use it only in accordance with the 
+	terms of the license agreement you entered into with hybris. -->
+
+<!--suppress ALL -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:mybatis="http://mybatis.org/schema/mybatis-spring" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+           http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context.xsd
+           http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring.xsd
+		   http://www.springframework.org/schema/aop
+		   http://www.springframework.org/schema/aop/spring-aop-3.2.xsd 
+		   http://www.springframework.org/schema/tx
+		   http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+		   http://www.springframework.org/schema/util 
+		   http://www.springframework.org/schema/util/spring-util-3.0.xsd
+           http://www.springframework.org/schema/security
+		   http://www.springframework.org/schema/security/spring-security.xsd
+           ">
+
+   <security:http  pattern="/web/rest/**" security="none"></security:http>
+   <security:http  pattern="/init" security="none"></security:http>
+	<bean id="securityFilterChainProxy" class="org.springframework.security.web.FilterChainProxy">
+		<constructor-arg>
+			<list>
+				<security:filter-chain 
+				    pattern="/web/auth"
+					filters="concurrentSessionFilter,securityContextPersistenceFilter,logoutFilter,j2eePreAuthenticationFilter,sessionManagementFilter, anonymousAuthenticationFilter,exceptionTranslationFilter,filterSecurityInterceptor"></security:filter-chain>
+			</list>
+		</constructor-arg>
+	</bean>
+
+
+	<bean id="preAuthenticatedUserDetailsService" class="org.springframework.security.web.authentication.preauth.PreAuthenticatedGrantedAuthoritiesUserDetailsService" />
+
+	<bean class="org.springframework.security.access.vote.RoleVoter"
+		id="roleVoter" />
+
+	<!-- 自定义资源权限关系认证 -->
+	<bean id="accessDecisionManager"
+		class="org.springframework.security.access.vote.AffirmativeBased">
+		<constructor-arg>
+			<list>
+				<bean class="org.springframework.security.access.vote.RoleVoter" />
+				<bean
+					class="org.springframework.security.web.access.expression.WebExpressionVoter" />
+			</list>
+		</constructor-arg>
+	</bean>
+
+	<security:authentication-manager alias="authenticationManager"
+		id="authenticationManager">
+		<security:authentication-provider
+			ref="authenticationProvider">
+		</security:authentication-provider>
+	</security:authentication-manager>
+
+	<alias name="defaultAuthenticationProvider" alias="authenticationProvider"></alias>
+	<bean id="defaultAuthenticationProvider"
+		class="org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider">
+		<property name="preAuthenticatedUserDetailsService" ref="preAuthenticatedUserDetailsService" />
+	</bean>
+	<!-- 自定义认证管理,资源,权限 -->
+	<bean id="filterSecurityInterceptor"
+		class="org.springframework.security.web.access.intercept.FilterSecurityInterceptor">
+		<property name="authenticationManager" ref="authenticationManager" />
+		<property name="accessDecisionManager" ref="accessDecisionManager" />
+		<property name="securityMetadataSource">
+			<security:filter-security-metadata-source
+				use-expressions="true">
+				<security:intercept-url pattern="/**"
+					access="hasRole('ROLE_FMGL')" />
+			</security:filter-security-metadata-source>
+		</property>
+	</bean>
+
+	<!-- 页面标签权限功能依赖 -->
+	<bean id="webInvocationFilter"
+		class="org.springframework.security.web.access.DefaultWebInvocationPrivilegeEvaluator">
+		<constructor-arg ref="filterSecurityInterceptor" />
+	</bean>
+
+	<bean id="exceptionTranslationFilter"
+		class="org.springframework.security.web.access.ExceptionTranslationFilter">
+		<constructor-arg ref="authenticationEntryPoint" />
+		<property name="accessDeniedHandler">
+			<!-- 拒绝未授权访问跳转 -->
+			<bean
+				class="org.springframework.security.web.access.AccessDeniedHandlerImpl">
+				<property name="errorPage" value="/error/audit.jsp" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="authenticationEntryPoint"
+		class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
+		<constructor-arg value="/login.jsp" />
+	</bean>
+
+	<!-- SESSION固化保护,以及并发控制 -->
+	<bean id="sessionManagementFilter"
+		class="org.springframework.security.web.session.SessionManagementFilter">
+		<constructor-arg name="securityContextRepository" ref="securityContextRepository" />
+	</bean>
+
+	<!-- SESSION并发配置 -->
+	<bean id="concurrentSessionControlStrategy"
+		class="org.springframework.security.web.authentication.session.ConcurrentSessionControlAuthenticationStrategy">
+		<constructor-arg name="sessionRegistry" ref="sessionRegistry" />
+		<property name="maximumSessions" value="1" />
+		<property name="exceptionIfMaximumExceeded" value="false" />
+	</bean>
+
+	<bean id="sessionRegistry"
+		class="org.springframework.security.core.session.SessionRegistryImpl" />
+
+	<!-- SESSION并发处理 -->
+	<bean id="concurrentSessionFilter"
+		class="org.springframework.security.web.session.ConcurrentSessionFilter">
+		<constructor-arg ref="sessionRegistry" />
+		<property name="logoutHandlers">
+			<list>
+				<ref bean="logoutHandler" />
+			</list>
+		</property>
+	</bean>
+
+	<!-- 记住密码功能(COOKIE方式) -->
+	<!-- <bean id="rememberMeAuthenticationFilter" class="org.springframework.security.web.authentication.rememberme.RememberMeAuthenticationFilter"> 
+		<property name="rememberMeServices" ref="rememberMeServices" /> <property 
+		name="authenticationManager" ref="authenticationManager" /> </bean> <bean 
+		id="rememberMeServices" class="org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices"> 
+		<property name="userDetailsService" ref="userDetailsService" /> <property 
+		name="parameter" value="rememberMe" /> <property name="tokenValiditySeconds" 
+		value="604800" /> <property name="key" value="springRocks" /> </bean> <bean 
+		id="rememberMeAuthenticationProvider" class="org.springframework.security.authentication.RememberMeAuthenticationProvider"> 
+		<property name="key" value="springRocks" /> </bean> -->
+	<!-- 注销过滤器 -->
+	<bean id="logoutFilter"
+		class="org.springframework.security.web.authentication.logout.LogoutFilter">
+		<constructor-arg value="/logout.jsp" />
+		<constructor-arg>
+			<array>
+				<ref bean="logoutHandler" />
+				<!-- <ref bean="rememberMeServices" /> -->
+			</array>
+		</constructor-arg>
+		<property name="filterProcessesUrl" value="/logout" />
+	</bean>
+
+	<!-- 注销监听器 -->
+	<bean id="logoutHandler"
+		class="org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler">
+	</bean>
+
+	<!-- 持久化SecurityContext过滤器 -->
+	<bean id="securityContextPersistenceFilter"
+		class="org.springframework.security.web.context.SecurityContextPersistenceFilter">
+		<constructor-arg ref="securityContextRepository" />
+	</bean>
+
+	<!-- 生成HttpSessionSecurityContextRepository -->
+	<bean id="securityContextRepository"
+		class="org.springframework.security.web.context.HttpSessionSecurityContextRepository">
+		<property name="allowSessionCreation" value="true" />
+		<property name="disableUrlRewriting" value="false" />
+	</bean>
+
+	<bean id="j2eePreAuthenticationFilter"
+		class="org.springframework.security.web.authentication.preauth.j2ee.J2eePreAuthenticatedProcessingFilter">
+		<property name="authenticationManager" ref="authenticationManager"/>
+		<property name="authenticationDetailsSource">
+        <bean class="org.springframework.security.web.authentication.preauth.j2ee.J2eeBasedPreAuthenticatedWebAuthenticationDetailsSource">
+            <property name="mappableRolesRetriever">
+                <bean class="org.springframework.security.web.authentication.preauth.j2ee.WebXmlMappableAttributesRetriever" />
+            </property>
+            <property name="userRoles2GrantedAuthoritiesMapper">
+                <bean class="org.springframework.security.core.authority.mapping.SimpleAttributes2GrantedAuthoritiesMapper">
+                    <property name="convertAttributeToUpperCase" value="true"/>
+                </bean>
+            </property>
+        </bean>
+    </property>
+	</bean>
+	
+	<bean id="anonymousAuthenticationFilter"
+		class="org.springframework.security.web.authentication.AnonymousAuthenticationFilter">
+		<constructor-arg value="ok" />
+	</bean>
+
+</beans>

@@ -1,0 +1,30 @@
+	
+	<div ng-include="'modules/public/andon_header_bar.html'"></div>
+	
+
+	
+	<!-- <div ng-include="'modules/public/andon_footer_bar.html'"></div> -->
+		<div ui-view ng-init="initUI();" ></div> 
+
+
+		<div id="alerts-manager-box" ng-if="bodyConfig.alerts.length > 0">
+			<uib-alert ng-repeat="alert in bodyConfig.alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</uib-alert>
+		</div>
+		
+	
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

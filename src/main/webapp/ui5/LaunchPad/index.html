@@ -1,0 +1,99 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta http-equiv='Content-Type' content='text/html;charset=UTF-8' />
+<link rel="stylesheet" type="text/css" href="css/style.css">
+
+<script id="sap-ui-bootstrap" src="../resources/sap-ui-core.js"
+	data-sap-ui-libs="sap.m, sap.ui.layout"
+	data-sap-ui-theme="sap_bluecrystal"
+	data-sap-ui-xx-bindingSyntax="complex"
+	data-sap-ui-resourceroots='{
+            "fmg.conmon.lpd": "./",
+            "fmg.conmon.watchlist": "../WatchList/",
+            "fmg.conmon.eventlist": "../EventList/"
+            
+          }'>
+	
+</script>
+
+<script>
+	//console.log("console.log works well");
+	//jQuery.sap.log.setLevel(jQuery.sap.log.LogLevel.INFO);
+	window.entry = "mainapp";
+
+    var findComponentOfRoutePath = function(tag) {
+      tag = tag.replace('#', '');
+      if (tag[0] === '/') {
+        tag = tag.slice(1);
+      }
+
+      var route = tag.split('/')[0];
+      var comp = null;
+      if (route === "") {
+        comp = window.entry;
+      } else {
+        comp = route;
+      }
+
+      return comp;
+    };
+
+
+	sap.ui.getCore().attachInit(function() {
+		
+		var hashTag = window.location.hash;
+    	var componentName = findComponentOfRoutePath(hashTag);
+    	//console.log(hashTag);
+    	//console.log(componentName);
+		
+		new sap.ui.getCore().createComponent({
+			height : "100%",
+			id : "mainapp",
+			name : "fmg.conmon.lpd"
+		});
+		
+		new sap.ui.getCore().createComponent({
+			height : "100%",
+			id : "watchlist",
+			name : "fmg.conmon.watchlist"
+		});
+		
+		new sap.ui.getCore().createComponent({
+			height : "100%",
+			id : "eventlist",
+			name : "fmg.conmon.eventlist"
+		});
+
+		
+
+		var container = new sap.ui.core.ComponentContainer("container");
+		var app = sap.ui.getCore().getComponent(componentName);
+		//console.log(app);
+		container.setComponent(app);
+
+/*
+		new sap.ui.getCore().createComponent({
+					height: "100%",
+					id: "threeaccounts",
+					name: "fmg.conmon.threeaccounts"
+		});
+
+		var mainApp = sap.ui.getCore().getComponent("threeaccounts");
+		var container = new sap.ui.core.ComponentContainer("container", {
+			component: mainApp
+		});
+*/				
+		container.placeAt("content");
+	});
+</script>
+
+</head>
+
+<body class="sapUiBody" role="application">
+	<div id="content"></div>
+</body>
+
+</html>

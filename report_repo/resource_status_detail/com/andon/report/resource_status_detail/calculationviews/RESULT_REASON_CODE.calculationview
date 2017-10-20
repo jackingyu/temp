@@ -1,0 +1,697 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" schemaVersion="2.3" id="RESULT_REASON_CODE" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="reportingEnabled" calculationScenarioType="SCRIPT_BASED" dataCategory="CUBE" enforceSqlExecution="false" executionSemantic="UNDEFINED" scriptParametersCaseSensitive="true">
+  <origin/>
+  <descriptions defaultDescription="RESRCE_STATUS_DETAIL"/>
+  <metadata activatedAt="2016-09-08 08:16:29.0" changedAt="2016-09-08 08:16:27.488"/>
+  <localVariables>
+    <variable id="site" parameter="true">
+      <descriptions defaultDescription="site"/>
+      <variableProperties datatype="NVARCHAR" defaultValue="1030" length="6" mandatory="true">
+        <valueDomain type="empty"/>
+        <selection multiLine="false" type="SingleValue"/>
+      </variableProperties>
+    </variable>
+    <variable id="resourceType" parameter="true">
+      <descriptions defaultDescription="resourceType"/>
+      <variableProperties datatype="NVARCHAR" defaultValue="RESOURCE_TYPE='APAC'" length="412" mandatory="true">
+        <valueDomain type="empty"/>
+        <selection multiLine="false" type="SingleValue"/>
+      </variableProperties>
+    </variable>
+    <variable id="resrce" parameter="true">
+      <descriptions defaultDescription="resrce"/>
+      <variableProperties datatype="NVARCHAR" defaultValue="RESRCE='APAC0004'" length="412" mandatory="true">
+        <valueDomain type="empty"/>
+        <selection multiLine="false" type="SingleValue"/>
+      </variableProperties>
+    </variable>
+    <variable id="shift" parameter="true">
+      <descriptions defaultDescription="shift"/>
+      <variableProperties datatype="NVARCHAR" defaultValue="SHIFT='M1'" length="412" mandatory="true">
+        <valueDomain type="empty"/>
+        <selection multiLine="false" type="SingleValue"/>
+      </variableProperties>
+    </variable>
+    <variable id="workArea" parameter="true">
+      <descriptions defaultDescription="workArea"/>
+      <variableProperties datatype="NVARCHAR" defaultValue="P13" length="36" mandatory="true">
+        <valueDomain type="empty"/>
+        <selection multiLine="false" type="SingleValue"/>
+      </variableProperties>
+    </variable>
+    <variable id="lineArea" parameter="true">
+      <descriptions defaultDescription="lineArea"/>
+      <variableProperties datatype="NVARCHAR" defaultValue="1-1030-0038-0001" length="36" mandatory="true">
+        <valueDomain type="empty"/>
+        <selection multiLine="false" type="SingleValue"/>
+      </variableProperties>
+    </variable>
+    <variable id="startDate" parameter="true">
+      <descriptions defaultDescription="startDate"/>
+      <variableProperties datatype="DATE" defaultValue="2016-08-01" mandatory="true">
+        <valueDomain type="empty"/>
+        <selection multiLine="false" type="SingleValue"/>
+      </variableProperties>
+    </variable>
+    <variable id="endDate" parameter="true">
+      <descriptions defaultDescription="endDate"/>
+      <variableProperties datatype="DATE" defaultValue="2016-08-05" mandatory="true">
+        <valueDomain type="empty"/>
+        <selection multiLine="false" type="SingleValue"/>
+      </variableProperties>
+    </variable>
+  </localVariables>
+  <variableMappings/>
+  <informationModelLayout relativeWidthScenario="27"/>
+  <dataSources/>
+  <calculationViews>
+    <calculationView xsi:type="Calculation:SqlScriptView" id="Script_View">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute datatype="DATE" id="STARTDATE"/>
+        <viewAttribute datatype="NVARCHAR" id="SHIFT" length="40"/>
+        <viewAttribute datatype="NVARCHAR" id="SHIFT_DESC" length="412"/>
+        <viewAttribute datatype="NVARCHAR" id="RESOURCE_BO" length="412"/>
+        <viewAttribute datatype="NVARCHAR" id="ME_USER_ID" length="40"/>
+        <viewAttribute datatype="NVARCHAR" id="RESOURCE_CODE" length="36"/>
+        <viewAttribute datatype="NVARCHAR" id="ASSET" length="36"/>
+        <viewAttribute datatype="NVARCHAR" id="LINE_AREA_DESC" length="36"/>
+        <viewAttribute datatype="NVARCHAR" id="RESRCE_DESC" length="40"/>
+        <viewAttribute datatype="TIMESTAMP" id="START_DATE_TIME"/>
+        <viewAttribute datatype="TIMESTAMP" id="END_DATE_TIME"/>
+        <viewAttribute datatype="SECONDDATE" id="INTERSECTION_START_TIME"/>
+        <viewAttribute datatype="SECONDDATE" id="INTERSECTION_END_TIME"/>
+        <viewAttribute datatype="DECIMAL" id="INTERSECTION_TIME_DURATION"/>
+        <viewAttribute datatype="DECIMAL" id="ELAPSED_TIME"/>
+        <viewAttribute datatype="NVARCHAR" id="REASON_CODE" length="412"/>
+        <viewAttribute datatype="NVARCHAR" id="REASON_CODE_DESC" length="412"/>
+        <viewAttribute datatype="NVARCHAR" id="RESOURCE_STATE_DESC" length="412"/>
+        <viewAttribute datatype="NVARCHAR" id="USER_ID" length="412"/>
+        <viewAttribute datatype="NVARCHAR" id="USER_BO" length="412"/>
+        <viewAttribute datatype="SECONDDATE" id="LOGIN_DATE_TIME"/>
+        <viewAttribute datatype="DECIMAL" id="QTY"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <localVariable>#site</localVariable>
+      <localVariable>#resourceType</localVariable>
+      <localVariable>#resrce</localVariable>
+      <localVariable>#shift</localVariable>
+      <localVariable>#workArea</localVariable>
+      <localVariable>#lineArea</localVariable>
+      <localVariable>#startDate</localVariable>
+      <localVariable>#endDate</localVariable>
+      <definition> 
+ /********* Begin Procedure Script ************/ 
+ BEGIN 
+	/*获取一条记录，开始时间和结束时间*/
+	selectTemp=SELECT
+				startDate AS STARTDATE,
+				endDate AS ENDDATE
+	FROM SYS.DUMMY;
+	
+	/*获取多条记录----开始时间到结束时间*/
+	mulDate=SELECT
+			ADD_DAYS(A.STARTDATE, B.ROW_ID) AS STARTDATE,
+			ENDDATE
+			FROM :selectTemp AS A
+			INNER JOIN MHP_OEE.REPORT_INDEX AS B
+			ON B.ROW_ID &lt;= DAYS_BETWEEN(A.STARTDATE, A.ENDDATE);
+			
+	/*关联设备的三张表和生产区域的两张表*/
+	resrceTable = SELECT
+					R.HANDLE,
+					R.SITE,
+					R.RESRCE,
+					R.DESCRIPTION AS RESRCE_DESC,
+					R.ASSET,
+					R.WORK_AREA,
+					R.LINE_AREA,
+					RTR.RESOURCE_BO,
+					RT.RESOURCE_TYPE,
+					RT.ENABLED
+	FROM MHP_OEE.RESRCE AS R
+	INNER JOIN MHP_OEE.RESOURCE_TYPE_RESOURCE AS RTR ON RTR.RESOURCE_BO=R.HANDLE
+	INNER JOIN MHP_OEE.RESOURCE_TYPE AS RT ON RT.HANDLE=RTR.RESOURCE_TYPE_BO
+	WHERE R.SITE=:site AND R.WORK_AREA=:workArea AND R.LINE_AREA=:lineArea AND RT.ENABLED='true';
+	
+	/*取拉线描述*/
+	resrceTable1=SELECT
+					A.HANDLE,
+					A.SITE,
+					A.RESRCE,
+					A.RESRCE_DESC,
+					A.ASSET,
+					A.WORK_AREA,
+					A.LINE_AREA,
+					B.DESCRIPTION AS LINE_AREA_DESC,
+					A.RESOURCE_BO,
+					A.RESOURCE_TYPE
+					FROM :resrceTable AS A
+					LEFT JOIN MHP_OEE.WORK_CENTER AS B ON B.WORK_CENTER=A.LINE_AREA;
+	
+	/*取班次描述*/
+	resrceTable2=SELECT
+					A.HANDLE,
+					A.SITE,
+					A.RESRCE,
+					A.RESRCE_DESC,
+					A.ASSET,
+					A.WORK_AREA,
+					A.LINE_AREA,
+					A.LINE_AREA_DESC,
+					WC.WORK_CENTER,
+					WC.HANDLE AS WORK_CENTER_BO,
+					WCS.SHIFT,
+					WCS.DESCRIPTION AS SHIFT_DESC,
+					WCS.SHIFT_DURATION AS SHIFT_DURATION,
+					WCS.START_TIME,
+					WCS.END_TIME,
+					A.RESOURCE_BO,
+					A.RESOURCE_TYPE
+					FROM :resrceTable1 AS A
+	INNER JOIN MHP_OEE.WORK_CENTER AS WC ON WC.SITE=A.SITE AND WC.WORK_CENTER=:workArea
+	INNER JOIN MHP_OEE.WORK_CENTER_SHIFT AS WCS ON WCS.WORK_CENTER_BO=WC.HANDLE AND WCS.ENABLED='true';
+					
+	resrceTable2 = APPLY_FILTER(:resrceTable2, :resourceType);
+	resrceTable2 = APPLY_FILTER(:resrceTable2, :resrce);
+	resrceTable2 = APPLY_FILTER(:resrceTable2, :shift);
+	
+
+	/*交叉组合多条记录*/
+	xxx=SELECT
+		A.HANDLE,
+		A.SITE,
+		A.RESRCE,
+		A.RESRCE_DESC,
+		A.ASSET,
+		A.WORK_AREA,
+		A.LINE_AREA,
+		A.LINE_AREA_DESC,
+		A.WORK_CENTER_BO,
+		A.SHIFT,
+		A.SHIFT_DESC,
+		A.SHIFT_DURATION,
+	    CAST(CAST(B.STARTDATE AS NVARCHAR) || ' ' || CAST(A.START_TIME AS NVARCHAR) AS SECONDDATE) AS SHIFT_START_DATE_TIME,
+		A.RESOURCE_BO,
+		A.RESOURCE_TYPE,
+		B.STARTDATE
+		FROM :resrceTable2 AS A INNER JOIN :mulDate AS B ON 1=1;
+		
+	yyy=SELECT
+		A.HANDLE,
+		A.SITE,
+		A.RESRCE,
+		A.RESRCE_DESC,
+		A.ASSET,
+		A.WORK_AREA,
+		A.LINE_AREA,
+		A.LINE_AREA_DESC,
+		A.WORK_CENTER_BO,
+		A.SHIFT,
+		A.SHIFT_DESC,
+		A.SHIFT_DURATION,
+		A.SHIFT_START_DATE_TIME,
+		ADD_SECONDS(A.SHIFT_START_DATE_TIME, A.SHIFT_DURATION) AS SHIFT_END_DATE_TIME,
+		A.RESOURCE_BO,
+		A.RESOURCE_TYPE,
+		A.STARTDATE
+		FROM :xxx AS A;
+
+	/*取ME负责人
+	var_table = SELECT
+				A.HANDLE,
+				A.SITE,
+				A.RESRCE,
+				A.RESRCE_DESC,
+				A.ASSET,
+				A.WORK_AREA,
+				A.LINE_AREA,
+				A.LINE_AREA_DESC,
+				A.WORK_CENTER_BO,
+				A.SHIFT,
+				A.SHIFT_DESC,
+				A.SHIFT_DURATION,
+				A.SHIFT_END_DATE_TIME,
+				A.SHIFT_START_DATE_TIME,
+				A.RESOURCE_BO,
+				A.STARTDATE,
+				B.ME_USER_ID
+	FROM :yyy AS A
+	LEFT JOIN MHP_OEE.RESOURCE_ME_USER AS B ON B.RESOURCE_BO=A.RESOURCE_BO AND B.SHIFT=A.SHIFT 
+	AND B.ENABLED='true';
+	*/
+	
+	var_ref_result_reason_code=SELECT
+			A.HANDLE,
+			A.SITE,
+			A.RESRCE,
+			A.RESRCE_DESC,
+			A.ASSET,
+			A.LINE_AREA,
+			A.LINE_AREA_DESC,
+			A.WORK_CENTER_BO,
+			A.SHIFT,
+			A.SHIFT_DESC,
+			A.SHIFT_START_DATE_TIME,
+			A.SHIFT_END_DATE_TIME,
+			A.RESOURCE_BO,
+			A.STARTDATE,
+			null AS ME_USER_ID,
+			B.START_DATE_TIME,
+			B.END_DATE_TIME,
+			B.ELAPSED_TIME,
+			B.REASON_CODE,
+			D.STATE,
+			D.DESCRIPTION AS RESOURCE_STATE_DESC,
+			C.DESCRIPTION AS REASON_CODE_DESC
+	FROM :yyy AS A
+	INNER JOIN MHP_OEE.RESOURCE_REASON_CODE_LOG AS B ON B.SITE=A.SITE AND B.RESOURCE_BO=A.RESOURCE_BO
+	AND ((B.START_DATE_TIME&lt;=A.SHIFT_START_DATE_TIME AND (B.END_DATE_TIME>A.SHIFT_START_DATE_TIME OR B.END_DATE_TIME=null)) 
+	OR (B.START_DATE_TIME>=A.SHIFT_START_DATE_TIME AND B.START_DATE_TIME&lt;A.SHIFT_END_DATE_TIME))
+	INNER JOIN MHP_OEE.REASON_CODE AS C ON C.REASON_CODE=B.REASON_CODE AND C.SITE=A.SITE
+	INNER JOIN MHP_OEE.RESOURCE_STATE AS D ON D.STATE=B.RESOURCE_STATE AND D.SITE=A.SITE;
+	
+	
+	
+		all_collection=SELECT
+				A.STARTDATE,
+				A.SHIFT,
+				A.SHIFT_DESC,
+				A.SHIFT_START_DATE_TIME,
+				A.SHIFT_END_DATE_TIME,
+				A.RESOURCE_BO,
+				A.ME_USER_ID,
+				A.RESRCE AS RESOURCE_CODE,
+				A.ASSET,
+				A.LINE_AREA_DESC,
+				A.RESRCE_DESC,
+				A.START_DATE_TIME,
+				A.END_DATE_TIME,
+				A.ELAPSED_TIME,
+				A.REASON_CODE,
+				A.REASON_CODE_DESC,
+				A.RESOURCE_STATE_DESC
+		FROM :var_ref_result_reason_code AS A;
+	
+	 
+	 intersection_time =SELECT
+	 			A.STARTDATE,
+				A.SHIFT,
+				A.SHIFT_DESC,
+				A.SHIFT_START_DATE_TIME,
+				A.SHIFT_END_DATE_TIME,
+				A.RESOURCE_BO,
+				A.ME_USER_ID,
+				A.RESOURCE_CODE,
+				A.ASSET,
+				A.LINE_AREA_DESC,
+				A.RESRCE_DESC,
+				A.START_DATE_TIME,
+				A.END_DATE_TIME,
+				CASE WHEN SHIFT_START_DATE_TIME > START_DATE_TIME THEN SHIFT_START_DATE_TIME ELSE START_DATE_TIME END AS INTERSECTION_START_TIME,
+				CASE WHEN SHIFT_END_DATE_TIME &lt; END_DATE_TIME THEN SHIFT_END_DATE_TIME ELSE END_DATE_TIME END AS INTERSECTION_END_TIME,
+				A.ELAPSED_TIME,
+				A.REASON_CODE,
+				A.REASON_CODE_DESC,
+				A.RESOURCE_STATE_DESC
+	 FROM :all_collection AS A;
+	 
+	 
+	 intersection_time_with_fu = SELECT
+	 			A.STARTDATE,
+				A.SHIFT,
+				A.SHIFT_DESC,
+				A.RESOURCE_BO,
+				A.ME_USER_ID,
+				A.RESOURCE_CODE,
+				A.ASSET,
+				A.LINE_AREA_DESC,
+				A.RESRCE_DESC,
+				A.START_DATE_TIME,
+				A.END_DATE_TIME,
+				A.INTERSECTION_START_TIME,
+				A.INTERSECTION_END_TIME,
+				SECONDS_BETWEEN(A.INTERSECTION_START_TIME, A.INTERSECTION_END_TIME) AS INTERSECTION_TIME_DURATION,
+				A.ELAPSED_TIME,
+				A.REASON_CODE,
+				A.REASON_CODE_DESC,
+				A.RESOURCE_STATE_DESC
+			FROM :intersection_time AS A;
+			
+		
+	intersection_time_without_fu = SELECT
+	 			A.STARTDATE,
+				A.SHIFT,
+				A.SHIFT_DESC,
+				A.RESOURCE_BO,
+				A.ME_USER_ID,
+				A.RESOURCE_CODE,
+				A.ASSET,
+				A.LINE_AREA_DESC,
+				A.RESRCE_DESC,
+				A.START_DATE_TIME,
+				A.END_DATE_TIME,
+				A.INTERSECTION_START_TIME,
+				A.INTERSECTION_END_TIME,
+				A.INTERSECTION_TIME_DURATION,
+				A.ELAPSED_TIME,
+				A.REASON_CODE,
+				A.REASON_CODE_DESC,
+				A.RESOURCE_STATE_DESC
+			FROM :intersection_time_with_fu AS A
+			WHERE A.INTERSECTION_TIME_DURATION >= 0;
+			
+			
+		
+			
+			
+			
+					var_between_date=SELECT 
+					A.HANDLE,
+					A.RESOURCE_BO,
+					A.USER_BO,
+					A.LOGIN_DATE_TIME,
+					A.LOGIN_MODE,
+					A.ACTION_CODE,
+					B.INTERSECTION_START_TIME,
+					B.INTERSECTION_END_TIME
+					FROM MHP_OEE.CLIENT_LOGIN_LOG AS A
+					INNER JOIN :intersection_time_without_fu  AS B ON
+					A.RESOURCE_BO=B.RESOURCE_BO
+					 WHERE A.LOGIN_MODE='ONSITE'
+					 AND A.LOGIN_DATE_TIME>B.INTERSECTION_START_TIME
+					 AND A.LOGIN_DATE_TIME&lt;B.INTERSECTION_END_TIME;
+			
+	  /*取PRD操作员*/
+	 var_prd=SELECT
+				A.STARTDATE,
+				A.SHIFT,
+				A.SHIFT_DESC,
+				A.RESOURCE_BO,
+				A.ME_USER_ID,
+				A.RESOURCE_CODE,
+				A.ASSET,
+				A.LINE_AREA_DESC,
+				A.RESRCE_DESC,
+				A.START_DATE_TIME,
+				A.END_DATE_TIME,
+				A.INTERSECTION_START_TIME,
+				A.INTERSECTION_END_TIME,
+				A.INTERSECTION_TIME_DURATION,
+				A.ELAPSED_TIME,
+				A.REASON_CODE,
+				A.REASON_CODE_DESC,
+				A.RESOURCE_STATE_DESC,
+				D.USER_ID,
+				null as USER_BO,
+				B.LOGIN_DATE_TIME
+				FROM :intersection_time_without_fu AS A 
+	 		LEFT JOIN (
+	 			SELECT HANDLE,INTERSECTION_START_TIME,INTERSECTION_END_TIME,RESOURCE_BO,USER_BO,LOGIN_DATE_TIME,LOGIN_MODE,ACTION_CODE,C FROM (
+				SELECT HANDLE,INTERSECTION_START_TIME,INTERSECTION_END_TIME,RESOURCE_BO,USER_BO,LOGIN_DATE_TIME,LOGIN_MODE,ACTION_CODE,
+				row_number()OVER(PARTITION BY INTERSECTION_START_TIME,INTERSECTION_END_TIME,RESOURCE_BO 
+				order by LOGIN_DATE_TIME) C
+				FROM :var_between_date)
+				WHERE C=1)
+				AS B ON B.RESOURCE_BO=A.RESOURCE_BO AND A.INTERSECTION_START_TIME=B.INTERSECTION_START_TIME 
+				AND A.INTERSECTION_END_TIME=B.INTERSECTION_END_TIME 
+			LEFT JOIN MHP_OEE.USR AS D ON D.HANDLE=B.USER_BO;
+			
+			
+			/*最大的开始时间*/
+			var_max_date=SELECT
+					A.RESOURCE_BO,
+					A.USER_BO,
+					A.LOGIN_DATE_TIME,
+					A.LOGIN_MODE,
+					A.ACTION_CODE,
+					B.INTERSECTION_START_TIME,
+					B.INTERSECTION_END_TIME
+					FROM MHP_OEE.CLIENT_LOGIN_LOG AS A
+					INNER JOIN :intersection_time_without_fu  AS B ON
+					A.RESOURCE_BO=B.RESOURCE_BO
+					WHERE A.LOGIN_MODE='ONSITE' AND A.ACTION_CODE='LOGIN'
+					AND A.LOGIN_DATE_TIME&lt;B.INTERSECTION_START_TIME;
+			
+	 /*取PRD操作员*/
+	 var_prd_1=SELECT
+				A.STARTDATE,
+				A.SHIFT,
+				A.SHIFT_DESC,
+				A.RESOURCE_BO,
+				A.ME_USER_ID,
+				A.RESOURCE_CODE,
+				A.ASSET,
+				A.LINE_AREA_DESC,
+				A.RESRCE_DESC,
+				A.START_DATE_TIME,
+				A.END_DATE_TIME,
+				A.INTERSECTION_START_TIME,
+				A.INTERSECTION_END_TIME,
+				A.INTERSECTION_TIME_DURATION,
+				A.ELAPSED_TIME,
+				A.REASON_CODE,
+				A.REASON_CODE_DESC,
+				A.RESOURCE_STATE_DESC,
+				D.USER_ID,
+				B.USER_BO,
+				B.LOGIN_DATE_TIME
+	 		FROM :intersection_time_without_fu AS A 
+	 		LEFT JOIN (
+	 			SELECT INTERSECTION_START_TIME,INTERSECTION_END_TIME,RESOURCE_BO,USER_BO,LOGIN_DATE_TIME,LOGIN_MODE,ACTION_CODE,C FROM (
+				SELECT INTERSECTION_START_TIME,INTERSECTION_END_TIME,RESOURCE_BO,USER_BO,LOGIN_DATE_TIME,LOGIN_MODE,ACTION_CODE,
+				row_number()OVER(PARTITION BY INTERSECTION_START_TIME,INTERSECTION_END_TIME,RESOURCE_BO 
+				order by LOGIN_DATE_TIME DESC) C
+				FROM :var_max_date)
+				WHERE C=1)
+				AS B ON B.RESOURCE_BO=A.RESOURCE_BO AND A.INTERSECTION_START_TIME=B.INTERSECTION_START_TIME 
+				AND A.INTERSECTION_END_TIME=B.INTERSECTION_END_TIME
+	 		LEFT JOIN MHP_OEE.USR AS D ON D.HANDLE=B.USER_BO;
+	 		
+	 		/*最小的结束时间*/
+	 		var_min_date=SELECT
+					A.RESOURCE_BO,
+					A.USER_BO,
+					A.LOGIN_DATE_TIME,
+					A.LOGIN_MODE,
+					A.ACTION_CODE,
+					B.INTERSECTION_START_TIME,
+					B.INTERSECTION_END_TIME
+					FROM MHP_OEE.CLIENT_LOGIN_LOG AS A
+					INNER JOIN :intersection_time_without_fu  AS B ON
+					A.RESOURCE_BO=B.RESOURCE_BO
+					WHERE A.LOGIN_MODE='ONSITE' AND A.ACTION_CODE='LOGOUT'
+					AND A.LOGIN_DATE_TIME>=B.INTERSECTION_END_TIME;
+	 		
+	 var_prd_2=SELECT
+				A.STARTDATE,
+				A.SHIFT,
+				A.SHIFT_DESC,
+				A.RESOURCE_BO,
+				A.ME_USER_ID,
+				A.RESOURCE_CODE,
+				A.ASSET,
+				A.LINE_AREA_DESC,
+				A.RESRCE_DESC,
+				A.START_DATE_TIME,
+				A.END_DATE_TIME,
+				A.INTERSECTION_START_TIME,
+				A.INTERSECTION_END_TIME,
+				A.INTERSECTION_TIME_DURATION,
+				A.ELAPSED_TIME,
+				A.REASON_CODE,
+				A.REASON_CODE_DESC,
+				A.RESOURCE_STATE_DESC,
+				D.USER_ID,
+				B.USER_BO,
+				B.LOGIN_DATE_TIME
+	 		FROM :intersection_time_without_fu AS A 
+	 		LEFT JOIN (
+	 			SELECT INTERSECTION_START_TIME,INTERSECTION_END_TIME,RESOURCE_BO,USER_BO,LOGIN_DATE_TIME,LOGIN_MODE,ACTION_CODE,C FROM (
+				SELECT INTERSECTION_START_TIME,INTERSECTION_END_TIME,RESOURCE_BO,USER_BO,LOGIN_DATE_TIME,LOGIN_MODE,ACTION_CODE,
+				row_number()OVER(PARTITION BY INTERSECTION_START_TIME,INTERSECTION_END_TIME,RESOURCE_BO 
+				order by LOGIN_DATE_TIME) C
+				FROM :var_min_date)
+				WHERE C=1)
+				AS B ON B.RESOURCE_BO=A.RESOURCE_BO AND A.INTERSECTION_START_TIME=B.INTERSECTION_START_TIME 
+				AND A.INTERSECTION_END_TIME=B.INTERSECTION_END_TIME
+	 		LEFT JOIN MHP_OEE.USR AS D ON D.HANDLE=B.USER_BO;
+	 		
+	 		var_prd_3=SELECT
+	 			A.STARTDATE,
+				A.SHIFT,
+				A.SHIFT_DESC,
+				A.RESOURCE_BO,
+				A.ME_USER_ID,
+				A.RESOURCE_CODE,
+				A.ASSET,
+				A.LINE_AREA_DESC,
+				A.RESRCE_DESC,
+				A.START_DATE_TIME,
+				A.END_DATE_TIME,
+				A.INTERSECTION_START_TIME,
+				A.INTERSECTION_END_TIME,
+				A.INTERSECTION_TIME_DURATION,
+				A.ELAPSED_TIME,
+				A.REASON_CODE,
+				A.REASON_CODE_DESC,
+				A.RESOURCE_STATE_DESC,
+				CASE 
+				WHEN B.LOGIN_DATE_TIME is not null and A.LOGIN_DATE_TIME is null THEN B.USER_ID
+				WHEN B.LOGIN_DATE_TIME is null or A.LOGIN_DATE_TIME is null THEN null
+				ELSE A.USER_ID END AS USER_ID,
+				B.USER_BO,
+				CASE WHEN B.LOGIN_DATE_TIME is null or A.LOGIN_DATE_TIME is null THEN B.LOGIN_DATE_TIME ELSE A.LOGIN_DATE_TIME END AS LOGIN_DATE_TIME
+	 		FROM :var_prd_2 AS A 
+	 		INNER JOIN :var_prd_1 AS B ON 
+	 		B.RESOURCE_BO=A.RESOURCE_BO 
+	 		AND A.INTERSECTION_START_TIME=B.INTERSECTION_START_TIME 
+			AND A.INTERSECTION_END_TIME=B.INTERSECTION_END_TIME;
+			
+	 		
+	 		result_prd=SELECT
+	 			A.STARTDATE,
+				A.SHIFT,
+				A.SHIFT_DESC,
+				A.RESOURCE_BO,
+				A.ME_USER_ID,
+				A.RESOURCE_CODE,
+				A.ASSET,
+				A.LINE_AREA_DESC,
+				A.RESRCE_DESC,
+				A.START_DATE_TIME,
+				A.END_DATE_TIME,
+				A.INTERSECTION_START_TIME,
+				A.INTERSECTION_END_TIME,
+				A.INTERSECTION_TIME_DURATION,
+				A.ELAPSED_TIME,
+				A.REASON_CODE,
+				A.REASON_CODE_DESC,
+				A.RESOURCE_STATE_DESC,
+				CASE WHEN A.USER_ID is not null THEN A.USER_ID ELSE B.USER_ID END AS USER_ID,
+				B.USER_BO,
+				CASE WHEN A.LOGIN_DATE_TIME is not null THEN A.LOGIN_DATE_TIME ELSE B.LOGIN_DATE_TIME END AS LOGIN_DATE_TIME
+	 			FROM :var_prd AS A INNER JOIN :var_prd_3 AS B ON B.RESOURCE_BO=A.RESOURCE_BO AND A.INTERSECTION_START_TIME=B.INTERSECTION_START_TIME 
+				AND A.INTERSECTION_END_TIME=B.INTERSECTION_END_TIME; 
+				
+	 
+	 var_out = SELECT *, 1 AS QTY FROM :result_prd;
+	
+	
+ END /********* End Procedure Script ************/</definition>
+    </calculationView>
+  </calculationViews>
+  <logicalModel id="Script_View">
+    <descriptions defaultDescription="RESRCE_STATUS_DETAIL"/>
+    <attributes>
+      <attribute id="STARTDATE" order="1">
+        <descriptions defaultDescription="STARTDATE"/>
+        <keyMapping columnObjectName="Script_View" columnName="STARTDATE"/>
+      </attribute>
+      <attribute id="SHIFT" order="2">
+        <descriptions defaultDescription="SHIFT"/>
+        <keyMapping columnObjectName="Script_View" columnName="SHIFT"/>
+      </attribute>
+      <attribute id="SHIFT_DESC" order="3">
+        <descriptions defaultDescription="SHIFT_DESC"/>
+        <keyMapping columnObjectName="Script_View" columnName="SHIFT_DESC"/>
+      </attribute>
+      <attribute id="RESOURCE_BO" order="4">
+        <descriptions defaultDescription="RESOURCE_BO"/>
+        <keyMapping columnObjectName="Script_View" columnName="RESOURCE_BO"/>
+      </attribute>
+      <attribute id="ME_USER_ID" order="5">
+        <descriptions defaultDescription="ME_USER_ID"/>
+        <keyMapping columnObjectName="Script_View" columnName="ME_USER_ID"/>
+      </attribute>
+      <attribute id="RESOURCE_CODE" order="6">
+        <descriptions defaultDescription="RESRCE"/>
+        <keyMapping columnObjectName="Script_View" columnName="RESOURCE_CODE"/>
+      </attribute>
+      <attribute id="ASSET" order="7">
+        <descriptions defaultDescription="ASSERT"/>
+        <keyMapping columnObjectName="Script_View" columnName="ASSET"/>
+      </attribute>
+      <attribute id="LINE_AREA_DESC" order="8">
+        <descriptions defaultDescription="LINE_AREA"/>
+        <keyMapping columnObjectName="Script_View" columnName="LINE_AREA_DESC"/>
+      </attribute>
+      <attribute id="RESRCE_DESC" order="9">
+        <descriptions defaultDescription="DESCRIPTION_1"/>
+        <keyMapping columnObjectName="Script_View" columnName="RESRCE_DESC"/>
+      </attribute>
+      <attribute id="START_DATE_TIME" order="10">
+        <descriptions defaultDescription="START_DATE_TIME"/>
+        <keyMapping columnObjectName="Script_View" columnName="START_DATE_TIME"/>
+      </attribute>
+      <attribute id="END_DATE_TIME" order="11">
+        <descriptions defaultDescription="END_DATE_TIME"/>
+        <keyMapping columnObjectName="Script_View" columnName="END_DATE_TIME"/>
+      </attribute>
+      <attribute id="INTERSECTION_START_TIME" order="12">
+        <descriptions defaultDescription="INTERSECTION_START_TIME"/>
+        <keyMapping columnObjectName="Script_View" columnName="INTERSECTION_START_TIME"/>
+      </attribute>
+      <attribute id="INTERSECTION_END_TIME" order="13">
+        <descriptions defaultDescription="INTERSECTION_END_TIME"/>
+        <keyMapping columnObjectName="Script_View" columnName="INTERSECTION_END_TIME"/>
+      </attribute>
+      <attribute id="INTERSECTION_TIME_DURATION" order="14">
+        <descriptions defaultDescription="INTERSECTION_TIME_DURATION"/>
+        <keyMapping columnObjectName="Script_View" columnName="INTERSECTION_TIME_DURATION"/>
+      </attribute>
+      <attribute id="ELAPSED_TIME" order="15">
+        <descriptions defaultDescription="ELPSED_TIME"/>
+        <keyMapping columnObjectName="Script_View" columnName="ELAPSED_TIME"/>
+      </attribute>
+      <attribute id="REASON_CODE" order="16">
+        <descriptions defaultDescription="REASON_CODE"/>
+        <keyMapping columnObjectName="Script_View" columnName="REASON_CODE"/>
+      </attribute>
+      <attribute id="REASON_CODE_DESC" order="17">
+        <descriptions defaultDescription="REASON_CODE_DESC"/>
+        <keyMapping columnObjectName="Script_View" columnName="REASON_CODE_DESC"/>
+      </attribute>
+      <attribute id="RESOURCE_STATE_DESC" order="18">
+        <descriptions defaultDescription="RESOURCE_STATE"/>
+        <keyMapping columnObjectName="Script_View" columnName="RESOURCE_STATE_DESC"/>
+      </attribute>
+      <attribute id="USER_ID" order="19">
+        <descriptions defaultDescription="USER_ID"/>
+        <keyMapping columnObjectName="Script_View" columnName="USER_ID"/>
+      </attribute>
+      <attribute id="USER_BO" order="20">
+        <descriptions defaultDescription="USER_BO"/>
+        <keyMapping columnObjectName="Script_View" columnName="USER_BO"/>
+      </attribute>
+      <attribute id="LOGIN_DATE_TIME" order="21">
+        <descriptions defaultDescription="LOGIN_DATE_TIME"/>
+        <keyMapping columnObjectName="Script_View" columnName="LOGIN_DATE_TIME"/>
+      </attribute>
+    </attributes>
+    <calculatedAttributes/>
+    <privateDataFoundation>
+      <tableProxies/>
+      <joins/>
+      <layout>
+        <shapes/>
+      </layout>
+    </privateDataFoundation>
+    <baseMeasures>
+      <measure id="QTY" order="22" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="QTY"/>
+        <measureMapping columnObjectName="Script_View" columnName="QTY"/>
+      </measure>
+    </baseMeasures>
+    <calculatedMeasures/>
+    <restrictedMeasures/>
+    <localDimensions/>
+  </logicalModel>
+  <layout>
+    <shapes>
+      <shape modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+        <upperLeftCorner x="40" y="85"/>
+      </shape>
+    </shapes>
+  </layout>
+</Calculation:scenario>

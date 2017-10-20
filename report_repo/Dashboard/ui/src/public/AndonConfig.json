@@ -1,0 +1,16 @@
+{
+	"AndonConfig": {	
+		"debug": true,
+		"currentLang": "zh-cn", 
+		"title": "Andon 2.0", 
+		"version": "1.0.1", 
+		"basePath": "http://10.17.170.135:51000",
+		"appPath": "MHP_OEE",
+		"requestPrefix": "web/rest/",
+		"SITE":"1030",
+		"UIConfig": {
+			"PageSizes": [ 5, 10, 15, 20, 50, 100],
+			"defaultPageSize": 10
+		}
+	}
+}

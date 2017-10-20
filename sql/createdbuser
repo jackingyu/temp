@@ -1,0 +1,2 @@
+CREATE USER 'conmon'@'localhost' identified by 'conmon';
+GRANT ALL PRIVILEGES ON conmon.* TO 'conmon'@'localhost';

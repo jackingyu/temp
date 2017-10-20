@@ -1,0 +1,96 @@
+.user-manager{
+    overflow: hidden;
+    background-color: white;
+}
+.user-manager-basic{
+    margin: 20px 0px;
+}
+.user-manager .user-manager-main{
+    font-size: 16px;
+}
+.user-manager .user-manager-main .um-title h1,
+.user-manager .user-manager-main .um-title h2,
+.user-manager .user-manager-main .um-title h3,
+.user-manager .user-manager-main .um-title h4,
+.user-manager .user-manager-main .um-title h5{
+    font-weight: 600;
+}
+.tab-content{
+    margin-left: 20px;
+}
+.user-manager .um-content{
+    margin-top: 20px;
+}
+.user-manager .um-title .um-title-website{
+    margin-top: 25px;
+}
+.um-title-span{
+    padding-right: 150px;
+}
+ .um-col-1, .um-col-2,
+ .um-col-2-5,
+ .um-col-3,
+ .um-col-4,
+ .um-col-8,
+ .um-col-9{
+    position: relative;
+    min-height: 1px;
+    margin-right: 5px;
+    margin-left: 15px;
+    float: left;
+}
+ .um-col-1{
+    width: 50px;
+}
+ .um-col-2{
+    width: 80px;
+}
+ .um-col-2-5{
+    width: 100px;
+}
+ .um-col-3{
+    width: 120px;
+}
+ .um-col-4{
+    width: 200px;
+}
+ .um-col-8{
+    width: 400px;
+}
+ .um-col-9{
+    width: 450px;
+}
+.um-control-label {
+    padding-top: 7px;
+    margin-bottom: 0;
+    text-align: right;
+}
+  .um-checkbox{
+    overflow: hidden;
+    width:170px;
+    margin-left: auto;
+    margin-right: auto
+}
+  .um-control-label-checkbox{
+    padding-top: 10px;
+    margin-bottom: 0;
+}
+
+.user-manager-main .um-panel .um-panel-heading{
+    border: 1px #555 solid;
+    background-color: #EBEBEB;
+}
+.user-manager-main .um-panel .um-panel-heading .um-panel-title .nav a{
+     color: black;
+     font-weight: 600;
+ }
+.user-manager-main .um-panel .um-panel-heading .um-panel-title .nav .active{
+    font-size: 18px;
+}
+.user-manager-main .um-panel .um-panel-heading .um-panel-title .nav a:hover{
+    color: #0044cc;
+    cursor: pointer;
+}
+.um-panel .um-panel-content{
+    margin-top: 20px;
+}

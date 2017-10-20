@@ -1,0 +1,13 @@
+.mySquare {                  /* style the CSS class that has been written by the renderer method */
+            display: inline-block;   /* enable squares to appear next to each other within one line */
+            border: 1px solid red;   /* add some border, so the square can actually be seen */
+            background-color: #ddd;
+            padding: 8px;
+            text-align: center;
+            -moz-box-sizing: border-box; /* consider padding+border part of the width/height */
+            box-sizing: border-box;
+        }
+
+.marginLeftButton {
+	margin-left: 20px;
+}        

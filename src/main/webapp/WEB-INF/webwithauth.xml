@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	id="FMGL" version="2.5">
+
+	<display-name>CONMON Web Application</display-name>
+
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>classpath*:/config/spring/appcontext-*.xml</param-value>
+	</context-param>
+
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+
+    <!--
+	<filter>
+		<filter-name>csrfFilter</filter-name>
+		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+		<async-supported>true</async-supported>
+	</filter>
+	<filter-mapping>
+		<filter-name>csrfFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+    -->
+
+	<filter>
+		<filter-name>encodingFilter</filter-name>
+		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+		<init-param>
+			<param-name>forceEncoding</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>encodingFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<filter>
+		<filter-name>httpBasicAuthenticationFilter</filter-name>
+		<filter-class>com.fmg.conmon.filter.HttpBasicAuthenticationFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>httpBasicAuthenticationFilter</filter-name>
+		<url-pattern>/api/*</url-pattern>
+	</filter-mapping>
+
+	<!--
+	<filter>
+		<filter-name>securityFilter</filter-name>
+		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+		<init-param>
+			<param-name>targetBeanName</param-name>
+			<param-value>securityFilterBean</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>securityFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	 -->
+	<filter> 
+		<filter-name>securityFilterChainProxy</filter-name>
+		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+	</filter>
+	
+	
+	<filter-mapping>
+		<filter-name>securityFilterChainProxy</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	 
+	<!--
+	<filter>
+		<filter-name>httpWebUiFilter</filter-name>
+		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+		<init-param>
+			<param-name>targetBeanName</param-name>
+			<param-value>httpWebUiFilter</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>httpWebUiFilter</filter-name>
+		<url-pattern>/web/rest/*</url-pattern>
+	</filter-mapping>
+	-->
+
+
+	<servlet>
+		<servlet-name>dispatcherServlet</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>classpath*:/config/spring/servlet-context.xml</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+		<!--
+		<async-supported>true</async-supported>
+		-->
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>dispatcherServlet</servlet-name>
+		<url-pattern>/</url-pattern>	<!-- TODO: possible to change the url-pattern? -->
+	</servlet-mapping>
+
+    <!-- 静态资源  -->
+	<servlet-mapping>  
+		<servlet-name>default</servlet-name>  
+		<url-pattern>*.html</url-pattern>  
+	</servlet-mapping>  
+	
+	<servlet-mapping>  
+		<servlet-name>default</servlet-name>  
+		<url-pattern>*.css</url-pattern>  
+	</servlet-mapping>  
+  
+	<servlet-mapping>  
+		<servlet-name>default</servlet-name>  
+		<url-pattern>*.gif</url-pattern>  
+	</servlet-mapping>
+      
+	<servlet-mapping>  
+		<servlet-name>default</servlet-name>  
+		<url-pattern>*.png</url-pattern>  
+	</servlet-mapping>  
+  
+	<servlet-mapping>  
+		<servlet-name>default</servlet-name>  
+		<url-pattern>*.jpg</url-pattern>  
+	</servlet-mapping>  
+  
+	<servlet-mapping>  
+		<servlet-name>default</servlet-name>  
+		<url-pattern>*.js</url-pattern>  
+	</servlet-mapping>  
+	<servlet-mapping>  
+		<servlet-name>default</servlet-name>  
+		<url-pattern>*.xls</url-pattern>  
+	</servlet-mapping>  
+	<servlet-mapping>  
+		<servlet-name>default</servlet-name>  
+		<url-pattern>*.woff</url-pattern>  
+	</servlet-mapping>  
+	<servlet-mapping>  
+		<servlet-name>default</servlet-name>  
+		<url-pattern>*.woff2</url-pattern>  
+	</servlet-mapping>  
+	<servlet-mapping>  
+		<servlet-name>default</servlet-name>  
+		<url-pattern>*.eot</url-pattern>  
+	</servlet-mapping>  
+	<servlet-mapping>  
+		<servlet-name>default</servlet-name>  
+		<url-pattern>*.svg</url-pattern>  
+	</servlet-mapping>  
+	<servlet-mapping>  
+		<servlet-name>default</servlet-name>  
+		<url-pattern>*.ttf</url-pattern>  
+	</servlet-mapping>  
+	
+	<!-- Uncomment below part when running this WAR on NW -->
+ 	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>conmon</web-resource-name>
+			<description>conmon</description>
+			<url-pattern>/*</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>FMGL</role-name>
+		</auth-constraint>
+		<user-data-constraint>
+			<transport-guarantee>NONE</transport-guarantee>
+		</user-data-constraint>
+	</security-constraint>
+
+   <login-config>  
+    <auth-method>FORM</auth-method>  
+    <realm-name>Tomcat ServerConfiguration Form-Based Authentication Area</realm-name>  
+    <form-login-config>  
+             <form-login-page>/login.jsp</form-login-page>  
+              <form-error-page>/error.html</form-error-page>  
+   
+    </form-login-config>  
+    </login-config>  
+    <security-role>
+        <role-name>FMGL</role-name>
+    </security-role>
+   
+</web-app>

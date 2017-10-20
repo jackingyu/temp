@@ -1,0 +1,72 @@
+/**
+ *
+ * 公共 样式 class
+ * 	
+ */
+.fill-parent {
+  width: 100%;
+  height: 100%;
+}
+
+.fill-width {
+  width: 100%; 
+}
+
+.fill-height {
+  height: 100%;
+}
+
+.max-fill-parent {  
+  max-height: 100%;
+  max-width: 100%;
+}
+
+.one-line-text {
+  @include single-line-ellipsis;
+}
+
+.flex-center{
+	@include display-flex;
+	@include align-items(center);
+	@include justify-content(center);
+}
+
+
+
+
+
+/*****        corver ui-grid style         *****/
+.ui-grid-column-menu-button{
+  top: 2px;
+}
+.ui-grid-header-cell .sortable{
+  background-color: rgba(139,205,255,.2);
+}
+.ui-grid-pager-container{
+  width: 100%;
+  padding-right: 1rem;
+  .ui-grid-pager-row-count-picker{
+    float: right;
+  }
+  &:after{
+    clear: both;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

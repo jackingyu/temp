@@ -1,0 +1,65 @@
+.device-maintain{
+    overflow: hidden;
+    background-color: white;
+}
+.device-maintain .tab-content{
+    overflow: hidden;
+    margin-left: 20px;
+    margin-bottom: 20px;
+}
+.nav.nav-tr-radius>li{
+    float: left;
+    border: 1px solid #ccc;
+    background-color: #EBEBEB;
+    border-top-right-radius: 30px;
+    -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+}
+.nav.nav-tr-radius > li > a:hover {
+    border-color: #5D83C1 #5D769D #0F76C5;
+    background-color: #9BB7E0;
+    border-top-right-radius: 30px;
+}
+.nav.nav-tr-radius > li.active > a,
+.nav.nav-tr-radius > li.active > a:hover,
+.nav.nav-tr-radius > li.active > a:focus {
+    border-top-right-radius: 30px;
+    color: white;
+    cursor: default;
+    background-color: #5C7AAB;
+    border: 1px solid #ddd;
+}
+/*@media (max-width: 1338px) {*/
+    /*.form-horizontal .plc-md-clear{*/
+        /*clear: both;*/
+    /*}*/
+    /*.form-horizontal .plc-md-margin{*/
+        /*margin-top: 15px;*/
+    /*}*/
+/*}*/
+/*@media (max-width: 888px) {*/
+    /*.device-maintain .panel{*/
+        /*width: 888px;*/
+    /*}*/
+/*}*/
+
+.myGrid {
+    height: 430px;
+    min-height: 200px;
+}
+.btn-highred{
+    padding: 0 10px ;
+    background-color:#E63D4D ;
+    color: white;
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-image: none;
+    border: 1px solid transparent;
+    border-radius: 2px;
+}
+

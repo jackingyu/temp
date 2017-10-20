@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="AndonApp">
+<head>
+	<meta charset="UTF-8">
+	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+	<title>安灯项目</title>
+	<script>
+	    var ROOTCONFIG = {
+			AndonConfig: {}
+		};
+		var UTILITIES = new Object();
+		(function (object) { 
+			    var loadConfigRequest = new XMLHttpRequest();
+			    loadConfigRequest.open('GET', 'public/AndonConfig.json',false);
+			    loadConfigRequest.send(null);
+			    if (loadConfigRequest.status === 200 || loadConfigRequest.status === 0) {
+			        ROOTCONFIG = JSON.parse(loadConfigRequest.responseText);
+			    }
+			    object.getToken = function () {
+			        var token = '-1';
+			        if (window.localStorage.crmToken) {
+			            token = window.localStorage.crmToken;
+			        }
+			        return token;
+			    };
+			    object.setToken = function (token) {
+			        window.localStorage.crmToken = token;
+			    }  
+		})(UTILITIES);
+
+
+    var urlParams = {};  
+    (function () {  
+        var match,  
+            pl     = /\+/g,  // Regex for replacing addition symbol with a space  
+            search = /([^&=]+)=?([^&]*)/g,  
+            decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); },  
+            query  = window.location.search.substring(1);  
+      
+        while (match = search.exec(query))  
+           urlParams[decode(match[1])] = decode(match[2]);  
+    })();  
+
+
+
+
+
+		(function(){
+			Date.prototype.pattern=function(fmt) {         
+			    var o = {         
+			    "M+" : this.getMonth()+1, //月份         
+			    "d+" : this.getDate(), //日         
+			    "h+" : this.getHours()%12 == 0 ? 12 : this.getHours()%12, //小时         
+			    "H+" : this.getHours(), //小时         
+			    "m+" : this.getMinutes(), //分         
+			    "s+" : this.getSeconds(), //秒         
+			    "q+" : Math.floor((this.getMonth()+3)/3), //季度         
+			    "S" : this.getMilliseconds() //毫秒         
+			    };    
+			    var week = {         
+			    "0" : "\u65e5",         
+			    "1" : "\u4e00",         
+			    "2" : "\u4e8c",         
+			    "3" : "\u4e09",         
+			    "4" : "\u56db",         
+			    "5" : "\u4e94",         
+			    "6" : "\u516d"        
+			    };    
+			    if(/(y+)/.test(fmt)){         
+			        fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));         
+			    }         
+			    if(/(E+)/.test(fmt)){         
+			        fmt=fmt.replace(RegExp.$1, ((RegExp.$1.length>1) ? (RegExp.$1.length>2 ? "\u661f\u671f" : "\u5468") : "")+week[this.getDay()+""]);         
+			    }         
+			    for(var k in o){         
+			        if(new RegExp("("+ k +")").test(fmt)){         
+			            fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));         
+			        }         
+			    }         
+			    return fmt;         
+			}       
+			
+		})();
+	</script>
+	
+	<!-- Font Awesome Icons -->
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+    <!-- Ionicons 2.0.0 -->
+    <link href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet" type="text/css" />
+
+	
+	<!--  lib 库依赖  -->
+	<script src="lib/jquery/dist/jquery.min.js"></script>
+	<script src="lib/angular/angular.min.js"></script>
+	<script src="lib/angular-sanitize/angular-sanitize.min.js"></script>
+	<script src="lib/ngstorage/ngStorage.min.js"></script>
+	<script src="lib/angular-translate/angular-translate.min.js"></script>
+	<script src="lib/angular-ui-router/release/angular-ui-router.min.js"></script>
+	<script src="lib/oclazyload/dist/ocLazyLoad.min.js"></script>
+	<link rel="stylesheet" href="lib/angular-ui-select/dist/select.min.css">
+	<script src="lib/angular-ui-select/dist/select.min.js"></script>
+	
+	<link rel="stylesheet" type="text/css" href="lib/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.min.css">
+	<script src="lib/bootstrap-switch/dist/js/bootstrap-switch.min.js"></script>
+	<script src="lib/angular-bootstrap-switch/dist/angular-bootstrap-switch.js"></script>
+	
+	<link rel="stylesheet" href="lib/angular-ui-grid/ui-grid.min.css">
+	<script src="lib/angular-animate/angular-animate.js"></script>
+	<script src="lib/angular-touch/angular-touch.js"></script>
+	<script src="lib/angular-ui-grid/ui-grid.js"></script>
+	<!--  bootstrap 相关  -->
+	<link rel="stylesheet" type="text/css" href="lib/bootstrap/dist/css/bootstrap.min.css"> 
+	<!-- <link rel="stylesheet" type="text/css" href="lib/bootstrap/dist/css/bootstrap-theme.min.css"> -->
+	<script src="lib/bootstrap/dist/js/bootstrap.min.js"></script>
+	
+	<link rel="stylesheet" href="lib/angular-bootstrap/ui-bootstrap-csp.css">
+	<script src="lib/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+	<script src="lib/angular-bootstrap/ui-bootstrap.min.js"></script>
+	<script src="lib/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+ 	
+	<!--   项目代码   -->
+	<link rel="stylesheet" type="text/css" href="css/AndonApp.css">
+    <link rel="stylesheet" type="text/css" href="modules/homePage/icon-font/iconfont.css">
+
+	<script src="public/js_helper/AndonUIUtils.js"></script>
+	<script src="public/AndonApp.js"></script>
+	<script src="modules/homePage/homeModule.js"></script>
+	<script src="modules/homePage/homeCtrls.js"></script>
+	<script src="modules/homePage/absHomePageCtrls.js"></script>
+	<script src="modules/utils/utilsServices.js"></script>
+	<script src="modules/public/move/moveModule.js"></script>
+
+
+</head>
+<body ng-controller="BodyCtrl" class="sidebar-mini">
+	<div ui-view></div>
+</body>
+</html>

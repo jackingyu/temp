@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="jobLoader" class="com.fmg.conmon.job.quartz.JobLoader">
+        <constructor-arg name="jobProvider" ref="dbJobProvider"/>
+    </bean>
+
+    <bean id="methodInvokingJobDetailFactoryBean" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="jobLoader" />
+        <property name="targetMethod" value="scanAndUpdateJob" />
+    </bean>
+
+    <bean id="managerTriggerBean" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
+        <property name="jobDetail" ref="methodInvokingJobDetailFactoryBean" />
+        <property name="startDelay" value="10000"/>
+        <property name="repeatInterval" value="30000000000"/>
+    </bean>
+
+    <!-- 注册SchedulerFactoryBean -->
+    <bean id="schedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="triggers">
+            <list>
+             <!--     <ref bean="managerTriggerBean" />-->
+            </list>
+        </property>
+    </bean>
+
+</beans>

@@ -1,0 +1,13 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:l="sap.ui.layout"
+	xmlns:core="sap.ui.core">
+	<Dialog showHeader="false" contentWidth="500px" contentHeight="100px">
+		<content>
+			<Text text="點擊“確定”按鈕，退出登錄"/>
+		</content>
+
+		<buttons>
+			<Button text="確定" press="handleLogoutPressed" width="75px" />
+			<Button text="取消" press="handleCancelDialog" width="75px" />
+		</buttons>
+	</Dialog>
+</core:FragmentDefinition>

@@ -1,0 +1,132 @@
+<div class="plc device-statement ">
+    <div class="plc-menu">
+        设备实时看板
+    </div>
+
+
+<div class="device-status-move-module move-module"
+         ng-class="{'transform-animateOut':bodyConfig.animateOut,'transform-select':bodyConfig.animateSelect}">
+
+	<div class="public-horizon">		
+		<label class="horizon-label label-4"><span class="text-red">*</span>生产区域：</label>
+		<div class="horizon-group horizon-col-3">
+			<ui-select ng-init="config.$workCenterSelect = $select"
+				class="andon-content-ui-select"
+				ng-change="workCenterChanged($select);"
+				ng-model="config.currentWorkCenter"> 
+				<ui-select-match placeholder="--- 请选择 ---"> 
+					<span ng-bind="config.currentWorkCenter.DESCRIPTION"></span>
+				</ui-select-match> 
+				<ui-select-no-choice>
+					<a href ng-click="$select.toggle($event);">暂无数据</a> 
+				</ui-select-no-choice>
+				<ui-select-choices repeat="item in config.workCenters track by $index">
+					<span ng-bind-html="item.descriptionNew"></span>
+				</ui-select-choices> 
+				<!--	
+				<ui-select-choices repeat="item in (config.workCenters | filter: $select.search) track by $index">
+					<span ng-bind-html="item.descriptionNew | highlight: $select.search"></span>
+				</ui-select-choices> 
+				-->
+			</ui-select>
+		</div>
+		
+		
+		
+		<label class="horizon-label label-2"><!--<span class="text-red">*</span>-->拉线：</label>
+		<div class="horizon-group horizon-col-3">
+			<ui-select ng-init="config.$lineSelect = $select"
+				class="andon-content-ui-select" ng-placeholder="请输入"
+				ng-change="lineChanged($select);" ng-model="config.currentLine">
+			<ui-select-match placeholder="--- 请选择 ---"> 
+				<span ng-bind="config.currentLine.DESCRIPTION"></span>
+			</ui-select-match>
+			<ui-select-no-choice> 
+				<a href ng-click="$select.toggle($event);"> 
+				<span ng-click="tipSelectClick('line');" ng-if="!config.currentWorkCenter.workCenter" class="no-action-color">请先选择生产区域</span>
+				<span ng-if="!!config.currentWorkCenter.workCenter"
+				class="no-data-color">该生产区域暂无拉线</span>
+			</a> </ui-select-no-choice> <ui-select-choices
+				repeat="item in (config.lines | filter: $select.search) track by $index">
+			<span ng-bind-html="item.descriptionNew | highlight: $select.search"></span>
+			</ui-select-choices> </ui-select>
+		</div>
+
+
+
+
+		<label class="horizon-label label-4">设备类型：</label>
+		<div class="horizon-group horizon-col-3">
+			<ui-select ng-init="config.$deviceTypeSelect = $select"
+				class="andon-content-ui-select" ng-placeholder="请输入"
+				ng-change="deviceTypeChanged($select);"
+				ng-model="config.currentDeviceType"> 
+
+                                <ui-select-match
+placeholder="--- 请选择 ---"> 
+				<span
+ng-bind="config.currentDeviceType.DESCRIPTION"></span>
+			</ui-select-match> 
+			<ui-select-no-choice> 
+			<a href
+ng-click="$select.toggle($event);">暂无数据</a> </ui-select-no-choice> <ui-select-choices
+				repeat="item in (config.deviceTypes | filter: $select.search) track by $index">
+			<span ng-bind-html="item.descriptionNew | highlight: $select.search"></span>
+			</ui-select-choices> 
+			</ui-select>
+		</div>
+
+
+
+
+       <label class="horizon-label label-4">设备编码：</label>
+        <div class="horizon-group horizon-col-3">
+            <ui-select multiple ng-init="config.$deviceNumSelect = $select" class="andon-content-ui-select" ng-placeholder="请输入" ng-change="deviceNumChanged($select);" ng-model="config.currentDeviceNums">
+                <ui-select-match placeholder="-- 请选择 -- 可多选">
+                    <span ng-bind="$item.DESCRIPTION"></span>
+                </ui-select-match>
+                <ui-select-no-choice>
+                    <a href ng-click="$select.toggle($event);">
+                        <span ng-click="tipSelectClick('deviceNum');" ng-if="!config.currentWorkCenter.workCenter && !config.currentLine.workCenter" class="no-action-color">请先选择生产区域、拉线</span>
+                        <span ng-if="!!config.currentWorkCenter.workCenter || !!config.currentLine.workCenter" class="no-data-color">暂无设备号</span>
+                    </a>
+                </ui-select-no-choice>
+                <ui-select-choices repeat="item in (config.deviceNums | filter: $select.search) track by $index">
+                    <span ng-bind-html="item.descriptionNew | highlight: $select.search"></span>
+                </ui-select-choices>
+            </ui-select>
+        </div>
+
+
+		<div class="horizon-btns">
+			<button type="submit" class="btn btn-primary"
+				ng-disabled="config.btnDisabledQuery" ng-click="queryDatas();">查询</button>
+		</div>
+	</div>
+</div>	
+<move-template></move-template>
+<div class="plc-content device-statement-content">
+        <form class="form-horizontal" role="form">
+            <div class="row statement-title">
+               <!--
+                <div class="col-sm-2 col-xs-2">  
+                	<label class="control-label label-title">生产区域：{{config.currentWorkCenter.DESCRIPTION}}</label>
+                </div>
+                <div class="col-sm-3 col-xs-3">
+                    <label class="control-label label-title">拉线：{{config.currentLine.DESCRIPTION}}</label>
+                </div>
+                -->
+                <div class="col-sm-2 col-xs-2">  
+                	<label class="control-label label-title">{{config.currentWorkCenterTitle}}</label>
+                </div>
+                <div class="col-sm-3 col-xs-3">
+                    <label class="control-label label-title">{{config.currentLineTitle}}</label>
+                </div>
+	</div>
+	</form>
+</div>
+	<!-- <uib-modal-backdrop >fdsfsd</uib-modal-backdrop> -->
+	<!-- <uib-modal-window uib-modal-animation-class>.............</uib-modal-window> -->
+	<div ui-grid="netInfoGridOptions" class="myGrid" ui-grid-edit
+		ui-grid-cellnav ui-grid-selection ui-grid-resize-columns
+	    ui-grid-validate></div>

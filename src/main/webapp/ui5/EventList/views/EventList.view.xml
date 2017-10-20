@@ -1,0 +1,129 @@
+<core:View xmlns:core="sap.ui.core" 
+           xmlns:mvc="sap.ui.core.mvc" 
+           xmlns="sap.m"
+           xmlns:l="sap.ui.layout"
+		   controllerName="fmg.conmon.eventlist.views.EventList" 
+		   xmlns:html="http://www.w3.org/1999/xhtml">
+	<Page id="idPage" title="故障代码" showNavButton="true" navButtonPress="handleNavHome">	
+    <content>
+		<l:Grid >
+          <l:content>  
+          
+			<VBox width="100%">
+			  <layoutData>
+                 <l:GridData span="L3 M6 S12"/>
+              </layoutData>  
+			  <Label text="故障代码编号"></Label> 
+			  <Input id="idStudentNumber"></Input>
+			</VBox>
+			
+			<VBox width="100%">
+			<layoutData>
+                 <l:GridData span="L3 M6 S12"/>
+              </layoutData>  
+			  <Label text="故障代码描述"></Label> 
+			  <Input id="idStudentName"></Input>
+			</VBox>
+
+      <VBox width="100%">
+      <layoutData>
+                 <l:GridData span="L3 M6 S12"/>
+              </layoutData>  
+        <Label text="预警算法"></Label> 
+        <Input id="idGender"></Input>
+      </VBox>
+
+      <VBox width="100%">
+             <layoutData>
+                 <l:GridData span="L3 M6 S12"/>
+              </layoutData>   
+         <Label></Label>
+         <HBox>       
+         <Button text="Create" id="idCreate" press="create" width="70px"></Button>
+         <Button text="Edit" id="idEdit" press="edit" width="70px" class="marginLeftButton"></Button>
+         </HBox>
+      </VBox>
+			
+		</l:content>
+		</l:Grid>
+		
+		<Panel>
+<!-- 		
+		<Table id="idStudentTable" inset="false" 
+        	items="{path: '/CarrierCollection'}">
+          <columns>
+            <Column>
+              <Text text="Student Name" />
+            </Column>
+            <Column minScreenWidth="Tablet" demandPopin="true">
+              <Text text="Student Number" />
+            </Column>
+            <Column minScreenWidth="Tablet" demandPopin="true">
+              <Text text="Gender" />
+            </Column>
+            <Column minScreenWidth="Tablet" demandPopin="true">
+              <Text text="Grade" />
+            </Column>
+            <Column minScreenWidth="Tablet" demandPopin="true">
+              <Text text="Class" />
+            </Column>
+          </columns>
+          <items>
+            <ColumnListItem type="Navigation" press="tableItemPress">
+              <cells>     
+                <Text text="{CARRNAME}"/>
+                <Text text="{CURRCODE}"/>
+                <Text text="{URL}"/>
+                <Text text="{carrid}"/>
+                <Text text="{CampaignDescription}"/>
+              </cells>
+            </ColumnListItem>
+          </items>
+        </Table>		
+ -->		
+		
+		
+ 		
+		<Table id="idStudentTable" items="{path: '/'}">
+          <columns>
+            <Column>
+              <Text text="故障代码描述" />
+            </Column>
+            <Column minScreenWidth="Tablet" demandPopin="true">
+              <Text text="故障代码编号" />
+            </Column>
+            <Column minScreenWidth="Tablet" demandPopin="true">
+              <Text text="预警算法" />
+            </Column>
+            <Column minScreenWidth="Tablet" demandPopin="true">
+              <Text text="创建者" />
+            </Column>
+            <Column minScreenWidth="Tablet" demandPopin="true">
+              <Text text="创建日期" />
+            </Column>
+          </columns>
+          <items>
+            <ColumnListItem>
+              <cells>
+                <Input value="{name}"   editable="false"></Input>
+                <Input value="{number}" editable="false"></Input>   
+                <Input value="{gender}" editable="false"></Input>   
+                <Input value="{grade}"  editable="false"></Input>
+                <Input value="{class}"  editable="false"></Input>  
+                <!--       
+                <Text text="{name}"/>
+                <Text text="{number}"/>
+                <Text text="{gender}"/>
+                <Text text="{grade}"/>
+                <Text text="{class}"/>
+                -->
+              </cells>
+            </ColumnListItem>
+          </items>
+        </Table>
+     
+     
+        </Panel>        
+		</content>
+	</Page>
+</core:View>

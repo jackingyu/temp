@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans-4.2.xsd 
+						http://www.springframework.org/schema/context 
+						http://www.springframework.org/schema/context/spring-context-4.2.xsd 
+						http://www.springframework.org/schema/mvc 
+						http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd
+						http://www.springframework.org/schema/tx
+						http://www.springframework.org/schema/tx/spring-tx-4.2.xsd">
+
+	<!-- Root Context: defines shared resources visible to all other web components -->
+
+	<!--
+		CSRF protection. Here we only include the CsrfFilter instead of all of Spring Security.
+		See http://docs.spring.io/spring-security/site/docs/3.2.x/reference/htmlsingle/#csrf for more information on
+		Spring Security's CSRF protection
+	
+	<bean id="csrfFilter" class="org.springframework.security.web.csrf.CsrfFilter">
+		<constructor-arg>
+			<bean class="org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository"/>
+		</constructor-arg>
+	</bean>
+		Provides automatic CSRF token inclusion when using Spring MVC Form tags or Thymeleaf. See
+		http://localhost:8080/#forms and form.jsp for examples
+	
+	<bean id="requestDataValueProcessor" class="org.springframework.security.web.servlet.support.csrf.CsrfRequestDataValueProcessor"/>
+    -->
+
+	<context:component-scan base-package="com.fmg" />
+
+	<context:property-placeholder location="classpath*:/config/properties/db-config.properties" />
+	
+	<!-- 
+	<mvc:default-servlet-handler/>
+    <mvc:resources mapping="swagger-ui.html" location="classpath:/META-INF/resources/" ></mvc:resources>
+    <mvc:resources mapping="/webjars/**" location="classpath:/META-INF/resources/webjars/" ></mvc:resources>
+    -->
+
+	<bean name="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName" value="${db.driver}" />
+		<property name="url" value="${db.url}" />
+		<property name="username" value="${db.username}" />
+		<property name="password" value="${db.password}" />
+		<property name="defaultAutoCommit" value="false" />
+		<property name="initialSize" value="${db.initialSize}" />
+		<property name="maxActive" value="${db.maxActive}" />
+		<property name="maxIdle" value="${db.maxIdle}" />
+		<property name="minIdle" value="${db.minIdle}" />
+	</bean>
+	
+	<bean name="devEnvConfig" class="com.fmg.conmon.config.DevEnvConfig">
+		<property name="devEnv" value="${db.env}" />
+	</bean>
+
+	<tx:annotation-driven transaction-manager="transactionManager" />
+
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	<bean name="securityFilterBean" class="com.fmg.conmon.common.security.SecurityFilter" />
+	<!-- 
+	<bean id="swagger2Config" class="springfox.documentation.swagger2.configuration.Swagger2DocumentationConfiguration" />
+	 -->
+	 
+</beans>

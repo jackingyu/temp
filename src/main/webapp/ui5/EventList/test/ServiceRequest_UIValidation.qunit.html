@@ -1,0 +1,234 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Integration Test Demo App</title>
+
+<link rel="stylesheet" href="../resources/sap/ui/thirdparty/qunit.css"
+	type="text/css" media="screen" />
+<script src="../resources/sap/ui/thirdparty/qunit.js"></script>
+<script src="../resources/sap/ui/qunit/qunit-junit.js"></script>
+
+<script src="../resources/sap/ui/thirdparty/qunit.js"></script>
+<script src="../resources/sap/ui/qunit/qunit-junit.js"></script>
+
+<script id="sap-ui-bootstrap" src="../resources/sap-ui-core.js"
+	data-sap-ui-theme="sap_bluecrystal"
+	data-sap-ui-libs="sap.m, sap.ui.layout"
+	data-sap-ui-xx-bindingSyntax="complex"
+	data-sap-ui-resourceroots='{
+       "insurance.threeaccounts.test": "."
+      }'>  
+</script>
+<script>
+  jQuery.sap.require("sap.ui.test.Opa5");
+  jQuery.sap.require("sap.ui.test.opaQunit");
+
+  jQuery.sap.require("insurance.threeaccounts.test.ServiceRequestArrangement");
+  jQuery.sap.require("insurance.threeaccounts.test.ServiceRequestAction");
+  jQuery.sap.require("insurance.threeaccounts.test.ServiceRequestAssertion");  
+
+  sap.ui.test.Opa5.extendConfig({
+    arrangements: new insurance.threeaccounts.test.ServiceRequestArrangement(),
+    actions: new insurance.threeaccounts.test.ServiceRequestAction(),
+    assertions: new insurance.threeaccounts.test.ServiceRequestAssertion(),
+    viewNamespace: "insurance.threeaccounts.views."
+  });
+  
+  opaTest("Start Service Request APP", function(Given, When, Then) {
+    // Start the application
+    Given.iStartMyApp();
+    Then.iShouldSeetheControlIsVisible("idStudentTable","Test",true);
+  });
+  
+  opaTest("Check search Table  ", function(Given, When, Then) {
+	When.iResetAllFilters();
+	Then.iShouldSeeControlLengthIs("idStudentTable", "Test", 4);
+  });
+ 
+  opaTest("Check Search function  ", function(Given, When, Then) {
+	 When.iResetAllFilters("Test", ["idStudentNumber","idStudentName"]);
+	 When.iEnterAValue("001","idStudentNumber","Test"); 
+	 When.iTapAControlById("idButton", "Test");
+	 Then.iShouldSeeControlLengthIs("idStudentTable", "Test", 1);
+  });
+  
+  opaTest("Check Details Page  ", function(Given, When, Then) {
+	  When.iSelectAControlById("idStudentTable", "Test", 0);
+	  Then.iShouldSeetheControlIsVisible("objectHeader", "Details", true);
+	  Then.theHeadTitle("Lin ZhiLin","objectHeader","Details");
+  });
+  
+ /*
+  opaTest("Check Search function - keyword", function(Given, When, Then) {
+    When.iEnterAValue("Customer","idKeyWord","ServiceRequestScreen") 
+    When.iTapAControlById("idSearchButton","ServiceRequestScreen");
+    Then.iShouldSeetheControlIsVisible("idSearchTable","ServiceRequestScreen",true); 
+  });
+
+  opaTest("Check Search function- policyholder ", function(Given, When, Then) {
+    When.iResetAllFilters();
+    When.iEnterAValue("平","idPolicyHolder","ServiceRequestScreen") 
+    When.iTapAControlById("idSearchButton","ServiceRequestScreen");
+    Then.iShouldSeetheControlIsVisible("idSearchTable","ServiceRequestScreen",true); 
+  });
+  
+  opaTest("Check Search function- insured ", function(Given, When, Then) {
+    When.iResetAllFilters();
+    When.iEnterAValue("高","idInsured","ServiceRequestScreen") 
+    When.iTapAControlById("idSearchButton","ServiceRequestScreen");
+    Then.iShouldSeetheControlIsVisible("idSearchTable","ServiceRequestScreen",true); 
+  });
+  
+   opaTest("Check Search function- Type ", function(Given, When, Then) {
+    When.iResetAllFilters();//(sKey, sControlId, sViewName)
+    When.iSelectByKey("002","idType","ServiceRequestScreen") 
+    When.iTapAControlById("idSearchButton","ServiceRequestScreen");
+    Then.iShouldSeetheControlIsVisible("idSearchTable","ServiceRequestScreen",true); 
+  });
+  
+  opaTest("Check Search function- Type ", function(Given, When, Then) {
+    When.iResetAllFilters();//(sKey, sControlId, sViewName)
+    When.iSelectByKey("001","idType","ServiceRequestScreen") 
+    When.iTapAControlById("idSearchButton","ServiceRequestScreen");
+    Then.iShouldSeetheControlIsVisible("idSearchTable","ServiceRequestScreen",true); 
+  });
+  
+  opaTest("Check Search function- Reply method", function(Given, When, Then) {
+    When.iResetAllFilters();
+    When.iSelectByKey("002","idReplyMethod","ServiceRequestScreen") 
+    When.iTapAControlById("idSearchButton","ServiceRequestScreen");
+    Then.iShouldSeetheControlIsVisible("idSearchTable","ServiceRequestScreen",true); 
+  });
+  
+  opaTest("Check Search function- Reply method ", function(Given, When, Then) {
+    When.iResetAllFilters();
+    When.iSelectByKey("003","idReplyMethod","ServiceRequestScreen") 
+    When.iTapAControlById("idSearchButton","ServiceRequestScreen");
+    Then.iShouldSeetheControlIsVisible("idSearchTable","ServiceRequestScreen",true); 
+  });
+  
+  opaTest("Check Search function- Reply method ", function(Given, When, Then) {
+    When.iResetAllFilters();
+    When.iSelectByKey("001","idReplyMethod","ServiceRequestScreen") 
+    When.iTapAControlById("idSearchButton","ServiceRequestScreen");
+    Then.iShouldSeetheControlIsVisible("idSearchTable","ServiceRequestScreen",true);
+  });
+  
+  opaTest("Check Search function- ALL ", function(Given, When, Then) {
+    When.iResetAllFilters();     
+    When.iTapAControlById("idSearchButton","ServiceRequestScreen");
+    Then.iShouldSeetheControlIsVisible("idSearchTable","ServiceRequestScreen",true); 
+  });
+  
+  opaTest("Check Search function- Sort descending ", function(Given, When, Then) {         
+    When.iTapAControlById("sortLeadsButton","ServiceRequestScreen");   
+    When.iTapAControlByType("sap.m.RadioButton",1,"ServiceRequestScreen",true);
+    When.iTapAControlByType("sap.m.Button",0,"ServiceRequestScreen",true); 
+    Then.iShouldSeetheControlIsVisible("idSearchTable","ServiceRequestScreen",true); 
+  });
+  
+  opaTest("Check Search function- Sort Ascending", function(Given, When, Then) {         
+    When.iTapAControlById("sortLeadsButton","ServiceRequestScreen");    
+    When.iTapAControlByType("sap.m.RadioButton",0,"ServiceRequestScreen",true);
+    When.iTapAControlByType("sap.m.Button",0,"ServiceRequestScreen",true); 
+    Then.iShouldSeetheControlIsVisible("idSearchTable","ServiceRequestScreen",true); 
+  });
+  
+  opaTest("Check Search function- Sort Ascending", function(Given, When, Then) {         
+    When.iTapAControlById("sortLeadsButton","ServiceRequestScreen");    
+    When.iTapAControlByType("sap.m.RadioButton",0,"ServiceRequestScreen",true);
+    When.iTapAControlByType("sap.m.RadioButton",2,"ServiceRequestScreen",true);
+    When.iTapAControlByType("sap.m.Button",0,"ServiceRequestScreen",true); 
+    Then.iShouldSeetheControlIsVisible("idSearchTable","ServiceRequestScreen",true); 
+  });
+  
+  opaTest("Check Search function- Sort Ascending", function(Given, When, Then) {         
+    When.iTapAControlById("sortLeadsButton","ServiceRequestScreen");    
+    When.iTapAControlByType("sap.m.RadioButton",0,"ServiceRequestScreen",true);
+    When.iTapAControlByType("sap.m.RadioButton",3,"ServiceRequestScreen",true);
+    When.iTapAControlByType("sap.m.Button",0,"ServiceRequestScreen",true); 
+    Then.iShouldSeetheControlIsVisible("idSearchTable","ServiceRequestScreen",true); 
+  });
+  
+  opaTest("Check Search function- Sort Ascending", function(Given, When, Then) {         
+    When.iTapAControlById("sortLeadsButton","ServiceRequestScreen");    
+    When.iTapAControlByType("sap.m.RadioButton",0,"ServiceRequestScreen",true);
+    When.iTapAControlByType("sap.m.RadioButton",4,"ServiceRequestScreen",true);
+    When.iTapAControlByType("sap.m.Button",0,"ServiceRequestScreen",true); 
+    Then.iShouldSeetheControlIsVisible("idSearchTable","ServiceRequestScreen",true);
+  });  
+  opaTest("Check Search function- Navigation to detail page", function(Given, When, Then) {         
+    When.iSelectAControlById("idSearchTable","ServiceRequestScreen",0)  
+    Then.iShouldSeetheControlIsVisible("replyButton","Details",true);    
+  });
+  
+  opaTest("Check Search function- Switch IconTab bar", function(Given, When, Then) {         
+    When.iSelectByKey("2", "itb", "Details");
+    Then.iShouldSeetheControlIsVisible("printButton","Details",true);
+  });
+  
+  opaTest("Check Search function- Switch IconTab bar", function(Given, When, Then) {         
+    When.iSelectByKey("1", "itb", "Details");
+    Then.iShouldSeetheControlIsVisible("replyButton","Details",true);
+  }); 
+  
+   opaTest("Check Search function- Switch IconTab bar", function(Given, When, Then) {
+   //This method does not work. In Details.controller.js, navback method call windows.go history (-1), so that I used the same code.
+   //When.iTapAControlByType1("sap.m.Button",3,false,"Details");
+    When.navDetails();
+    Then.testOk();
+  });   
+  
+  opaTest("Check Search function- handling progreess ", function(Given, When, Then) {
+    //When.iResetAllFilters();
+    When.iSelectByKey("002","idHandlingProgress","ServiceRequestScreen") 
+    When.iTapAControlById("idSearchButton","ServiceRequestScreen");
+    Then.iShouldSeeHandlingProgressTable("idSearchTable","ServiceRequestScreen");
+  });
+  
+  opaTest("Check Search function- Switch IconTab bar", function(Given, When, Then) {         
+    if (bHasItemsToReply) {
+      When.iSelectAControlById("idSearchTable","ServiceRequestScreen",0)  
+      Then.iShouldSeetheControlIsVisible("replyButton","Details",true);        
+    } else {
+      Then.testOk();
+    }
+  }); 
+  
+  opaTest("Check Search function- Switch IconTab bar", function(Given, When, Then) {         
+    if (bHasItemsToReply) {
+      When.iTapAControlById("replyButton","Details");    
+      Then.iShouldSeeADialog();    
+    } else {
+      Then.testOk();
+    }
+  });
+  
+  opaTest("Check Search function- Switch IconTab bar", function(Given, When, Then) {         
+    if (bHasItemsToReply) {
+      When.iEnterAValueByTypeAndTriggerLiveChange("Test001","sap.m.TextArea",0,true,"Details");
+      When.iTapAControlByType("sap.m.Button",2,true,"Details");
+      Then.iShouldSeetheControlIsVisible("printButton","Details",true);
+    } else {
+      Then.testOk();
+    }
+  });
+   opaTest("Check Search function- Print function", function(Given, When, Then) {
+    if (bHasItemsToReply) {
+    When.iTapAControlById("printButton","Details");    
+    Then.testOk();
+    } else {
+      Then.testOk();
+    }
+  });  
+   
+  */ 
+  
+</script>
+
+</head>
+<body>
+	<div id="qunit"></div>
+</body>
+</html>

@@ -1,0 +1,64 @@
+/*plc*/
+.plc{
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+.plc .plc-menu{
+    background-color: #ffffff;
+    padding: 10px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom: 1px #ccc solid;
+    color: #34C0E2;
+    font-weight: bold;
+    font-size: 20px;
+}
+.plc .plc-content{
+    /*overflow: hidden;*/
+    overflow: visible;
+    background-color: white;
+}
+.text-red{
+    color: red;
+}
+.text-16{
+    font-size: 16px;
+}
+.plc-content .plc-content-heading{
+    padding: 10px 10px 10px 10px;
+}
+.plc-col-3{
+
+    position: relative;
+    min-height: 1px;
+    margin-right: 5px;
+    margin-left: 5px;
+    float: left;
+    width: 125px;
+}
+ .plc-col-1{
+    position: relative;
+    min-height: 1px;
+    margin-left: 5px;
+    float: left;
+    width: 50px;
+}
+ .plc .plc-content .plc-content-heading .form-group{
+     margin-bottom: 0px;
+     margin-right: 0px;
+ }
+@media (max-width: 1020px) {
+ .plc-sm-clear{
+        clear: both;
+    }
+    .form-horizontal .plc-sm-margin{
+        margin-top: 15px;
+    }
+}
+@media (max-width: 767px) {
+    .control-label {
+        padding-top: 7px;
+        margin-bottom: 0;
+        text-align: right;
+    }
+}

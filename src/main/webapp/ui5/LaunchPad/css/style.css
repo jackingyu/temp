@@ -1,0 +1,52 @@
+.loginBackground{
+    background: url(../images/login_background_mobile.jpg) no-repeat center;
+    height:100%;
+    
+}
+
+.loginBox{
+    margin:auto;
+}
+
+.loginList{
+    margin-top:50%;
+}
+
+.launchpadBackground{
+    background: url(../images/LaunchPad_background.jpg) no-repeat center;
+    background-size:100% 100%;
+    margin-top: 0; /*0.5rem for status bar*/
+    padding: 0.5rem 0 2.5rem 1.5rem;
+}
+
+/*
+ .launchpadShell .sapUiUfdShellHead{
+ margin-top:15px;
+ }
+ */
+.sapMTile {
+	width: 10rem !important;
+}
+
+.sapMTileContent {
+	width: 10rem !important;
+}
+
+.sapMNavItem {
+    background-color:#F5F5F5;
+}
+.tileTitleCustomerFont .sapMStdTileTitle{
+
+    font-size: 1.3rem
+}
+
+.tileMarginLeft {
+    margin-right: 2rem;
+}
+
+
+/*
+.customerText>div:nth-child(2)>div:nth-child(2)>div:first-child{
+    font-size: 5rem
+}
+*/
